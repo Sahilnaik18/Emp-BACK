@@ -3,10 +3,12 @@ package com.empman.EmpMan.controller;
 import com.empman.EmpMan.Entities.ProfessionalDetails;
 import com.empman.EmpMan.service.ProfessionalDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/professional-details")
 public class ProfessionalDetailsController {
@@ -37,8 +39,19 @@ public class ProfessionalDetailsController {
         return professionalDetailsService.getProfessionalDetailsByAdmin(adminId);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteProfessionalDetails(@PathVariable Long id) {
-        professionalDetailsService.deleteProfessionalDetails(id);
+    // ✅ Fix Update Endpoint
+    @PutMapping("/update/{employeeId}")
+    public ResponseEntity<ProfessionalDetails> updateProfessionalDetails(
+            @PathVariable Long employeeId,
+            @RequestBody ProfessionalDetails details) {
+        ProfessionalDetails updatedDetails = professionalDetailsService.updateProfessionalDetails(employeeId, details);
+        return ResponseEntity.ok(updatedDetails);
+    }
+
+    // ✅ Fix Delete Endpoint
+    @DeleteMapping("/delete/{employeeId}")
+    public ResponseEntity<String> deleteProfessionalDetails(@PathVariable Long employeeId) {
+        professionalDetailsService.deleteProfessionalDetails(employeeId);
+        return ResponseEntity.ok("ProfessionalDet deleted successfully");
     }
 }

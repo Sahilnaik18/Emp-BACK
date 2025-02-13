@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.List;
 
 @Service
@@ -81,13 +82,14 @@ public class EmployeeService {
 //    }
 
 
+
     public Employee registerEmployee(Employee employee) {
-        if (employee.getFullName() == null || employee.getEmail() == null || employee.getPassword() == null) {
-            throw new IllegalArgumentException("Full name, email, and password are required");
+        if (employee.getFullName() == null || employee.getEmail() == null) {
+            throw new IllegalArgumentException("Full name and email are required");
         }
 
-        // Store the original password before encryption
-        String originalPassword = employee.getPassword();
+        // Generate a random 10-character password
+        String originalPassword = generateRandomPassword(10);
 
         try {
             // Encrypt the password using AES
@@ -106,7 +108,7 @@ public class EmployeeService {
             String body = "Hello " + employee.getFullName() + ",\n\n" +
                     "Your login details are as follows:\n" +
                     "Email: " + employee.getEmail() + "\n" +
-                    "Password: " + originalPassword + "\n\n" +  // Sending the original password
+                    "Password: " + originalPassword + "\n\n" +
                     "Please change your password after logging in.\n\n" +
                     "Best Regards,\nYour Company Team";
 
@@ -119,6 +121,17 @@ public class EmployeeService {
         return savedEmployee;
     }
 
+    // Utility method to generate a random password
+    private String generateRandomPassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*";
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            password.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return password.toString();
+    }
 
 //public Employee registerEmployee(Employee employee) {
 //    if (employee.getFullName() == null || employee.getEmail() == null || employee.getPassword() == null) {

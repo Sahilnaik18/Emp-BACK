@@ -50,16 +50,20 @@ public class FinanceService {
         return financeRepository.findByAdminId(adminId);
     }
 
-    public Finance updateFinanceRecord(Long id, Finance financeDetails) {
-        Finance finance = financeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Finance record not found"));
+    public Finance updateFinanceRecord(Long employeeId, Finance financeDetails) {
+        List<Finance> financeList = financeRepository.findByEmployeeId(employeeId);
+
+        if (financeList.isEmpty()) {
+            throw new RuntimeException("Finance record not found for employeeId: " + employeeId);
+        }
+
+        Finance finance = financeList.get(0); // Get the first finance record
 
         finance.setType(financeDetails.getType());
         finance.setAmount(financeDetails.getAmount());
         finance.setDescription(financeDetails.getDescription());
         finance.setDate(financeDetails.getDate());
 
-        // ✅ Ensure CTC is updated
         if (financeDetails.getCtc() != null) {
             finance.setCtc(financeDetails.getCtc());
         }
@@ -68,7 +72,8 @@ public class FinanceService {
     }
 
 
-    public void deleteFinanceRecord(Long id) {
-        financeRepository.deleteById(id);
+
+    public void deleteFinanceRecord(Long employeeId) {
+        financeRepository.deleteById(employeeId);
     }
 }

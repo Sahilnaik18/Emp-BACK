@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/finance")
 public class FinanceController {
@@ -37,15 +38,15 @@ public class FinanceController {
         return ResponseEntity.ok(financeService.getFinanceByAdmin(adminId));
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Finance> updateFinanceRecord(@PathVariable Long id, @RequestBody Finance financeDetails) {
-        return ResponseEntity.ok(financeService.updateFinanceRecord(id, financeDetails));
+    @PutMapping("/update/{employeeId}")
+    public ResponseEntity<Finance> updateFinanceRecord(@PathVariable Long employeeId, @RequestBody Finance financeDetails) {
+        return ResponseEntity.ok(financeService.updateFinanceRecord(employeeId, financeDetails));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteFinanceRecord(@PathVariable Long id) {
-        financeService.deleteFinanceRecord(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/delete/{employeeId}")
+    public ResponseEntity<String> deleteFinanceRecord(@PathVariable Long employeeId) {
+        financeService.deleteFinanceRecord(employeeId);
+        return ResponseEntity.ok("Finance deleted successfully");
     }
 
 

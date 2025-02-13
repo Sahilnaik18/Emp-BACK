@@ -14,7 +14,10 @@ public interface FinanceRepository extends JpaRepository<Finance, Long> {
 
     List<Finance> findByAdminId(Long adminId);
 
-    @Query(value = "SELECT * FROM finance WHERE employee_id = :employeeId AND date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)", nativeQuery = true)
+//    @Query(value = "SELECT * FROM finance WHERE employee_id = :employeeId AND date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)", nativeQuery = true)
+//    List<Finance> findLastSixMonthsByEmployee(Long employeeId);
+
+    @Query("SELECT f FROM Finance f WHERE f.employee.id = :employeeId AND f.date IS NOT NULL ORDER BY f.date DESC")
     List<Finance> findLastSixMonthsByEmployee(Long employeeId);
 
 }

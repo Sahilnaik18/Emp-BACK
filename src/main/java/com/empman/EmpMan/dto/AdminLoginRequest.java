@@ -1,6 +1,10 @@
 package com.empman.EmpMan.dto;
 
+import jakarta.persistence.Column;
+
 public class AdminLoginRequest {
+
+
     private String email;
     private String password;
 

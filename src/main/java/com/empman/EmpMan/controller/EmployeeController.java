@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
+
 
 @PostMapping("/login")
 public ResponseEntity<Employee> login(@RequestBody Map<String, String> credentials) {

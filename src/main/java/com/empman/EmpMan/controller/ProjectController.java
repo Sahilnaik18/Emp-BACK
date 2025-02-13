@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/projects")
 public class ProjectController {
@@ -37,14 +38,15 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.getProjectsByAdmin(adminId));
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Project> updateProject(@PathVariable Long id, @RequestBody Project projectDetails) {
-        return ResponseEntity.ok(projectService.updateProject(id, projectDetails));
+    @PutMapping("/update/{employeeId}")
+    public ResponseEntity<Project> updateProject(@PathVariable Long employeeId, @RequestBody Project projectDetails) {
+        return ResponseEntity.ok(projectService.updateProject(employeeId, projectDetails));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
-        projectService.deleteProject(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/delete/{employeeId}")
+    public ResponseEntity<String> deleteProject(@PathVariable Long employeeId) {
+        projectService.deleteProject(employeeId);
+        return ResponseEntity.ok("Project deleted successfully");
+
     }
 }

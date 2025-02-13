@@ -10,10 +10,10 @@ public class ProfessionalDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 6)
+    @Column(nullable = false, length = 6)
     private String employmentCode;
 
-    @Column(nullable = false, unique = true)
+
     private String companyMail;
 
     @Column(nullable = false, length = 12)

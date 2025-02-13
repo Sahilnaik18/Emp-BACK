@@ -46,16 +46,25 @@ public class ProjectService {
         return projectRepository.findByAdminId(adminId);
     }
 
-    public Project updateProject(Long id, Project projectDetails) {
-        Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+    public Project updateProject(Long employeeId, Project projectDetails) {
+        List<Project> projects = projectRepository.findByEmployeeId(employeeId);
+
+        if (projects.isEmpty()) {
+            throw new RuntimeException("Project not found for Employee ID: " + employeeId);
+        }
+
+        // Assuming we update the first project found
+        Project project = projects.get(0);
+
         project.setName(projectDetails.getName());
         project.setDescription(projectDetails.getDescription());
         project.setStatus(projectDetails.getStatus());
+
         return projectRepository.save(project);
     }
 
-    public void deleteProject(Long id) {
-        projectRepository.deleteById(id);
+
+    public void deleteProject(Long employeeId) {
+        projectRepository.deleteById(employeeId);
     }
 }

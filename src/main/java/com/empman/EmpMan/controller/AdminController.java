@@ -14,12 +14,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("api/admin")
+@RequestMapping("/admin")
 public class AdminController {
     @Autowired
     private AdminService adminService;
@@ -37,22 +37,34 @@ public class AdminController {
     public ResponseEntity<Admin> registerAdmin(@RequestBody Admin admin) {
         return ResponseEntity.ok(adminService.registerAdmin(admin));
     }
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, Object>> loginAdmin(@RequestParam String email, @RequestParam String password) {
+        Admin admin = adminRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
 
-@PostMapping("/login")
-public ResponseEntity<String> loginAdmin(@RequestParam String email, @RequestParam String password) {
-    boolean isAuthenticated = adminService.authenticateAdmin(email, password);  // Authenticate by decrypting password
+        boolean isAuthenticated = adminService.authenticateAdmin(email, password);
 
-    if (isAuthenticated) {
-        // Manually authenticate the user and set the SecurityContext
-        User authenticatedUser = new User(email, password, new ArrayList<>());
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(authenticatedUser, password, authenticatedUser.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (isAuthenticated) {
+            // Set Security Context
+            User authenticatedUser = new User(email, password, new ArrayList<>());
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(authenticatedUser, password, authenticatedUser.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return ResponseEntity.ok("Login successful");
-    } else {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            // ✅ Return admin ID and email in JSON response
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Login successful");
+            response.put("adminId", admin.getId()); // Include admin ID
+            response.put("email", admin.getEmail());
+
+            return ResponseEntity.ok(response);
+        } else {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Invalid credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
     }
-}
+
 
     @PostMapping("/employee")
     public ResponseEntity<Employee> registerEmployee(@RequestBody Employee employee, @RequestParam Long adminId) {
